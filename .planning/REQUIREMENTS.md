@@ -14,10 +14,10 @@
 
 ### Script Generation
 
-- [ ] **SCRPT-01**: Interactive lesson selector — browse lessons by module, see pending/done status
+- [x] **SCRPT-01**: Interactive lesson selector — browse lessons by module, see pending/done status
 - [x] **SCRPT-02**: Context assembly — for selected lesson: pull lesson outline + top-5 relevant bootcamp transcript segments via keyword matching
 - [x] **SCRPT-03**: Claude API call (Anthropic SDK) — generates English narration script with AV two-column format and [SCREEN RECORDING], [IMAGE: desc], [VIDEO: desc], [VO], [PAUSE] markers
-- [ ] **SCRPT-04**: Script review loop — display generated script in terminal, allow (a)ccept / (e)dit / (r)egenerate / (s)kip
+- [x] **SCRPT-04**: Script review loop — display generated script in terminal, allow (a)ccept / (e)dit / (r)egenerate / (s)kip
 - [x] **SCRPT-05**: Save approved script to `scripts/M{n}L{n}_{slug}.md`
 - [x] **SCRPT-06**: Prompt caching — course content + bootcamp index cached across all 30 lesson generations (~$0.54 total cost)
 
@@ -84,10 +84,10 @@
 | DATA-02 | Phase 2 | Complete |
 | DATA-03 | Phase 2 | Complete |
 | DATA-04 | Phase 2 | Complete |
-| SCRPT-01 | Phase 3 | Pending |
+| SCRPT-01 | Phase 3 | Complete |
 | SCRPT-02 | Phase 3 | Complete |
 | SCRPT-03 | Phase 3 | Complete |
-| SCRPT-04 | Phase 3 | Pending |
+| SCRPT-04 | Phase 3 | Complete |
 | SCRPT-05 | Phase 3 | Complete |
 | SCRPT-06 | Phase 3 | Complete |
 | TTS-01 | Phase 4 | Pending |

@@ -7,33 +7,39 @@
 
 ## Phase 1: Project Setup & Environment
 
-**Goal:** Working Python environment with Chatterbox TTS running and Claude API connected.
+**Goal:** Working Python environment with Kokoro TTS verified and project config aligned to decisions.
 
 **Requirements covered:** SETUP-01, SETUP-02, SETUP-03
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Config cleanup and test infrastructure
+- [ ] 01-02-PLAN.md — Kokoro TTS verification, unit tests, and README
+
 ### Plans
 
-**Plan 1.1 — Python Project Scaffold**
-- Create `requirements.txt`: anthropic, requests, rich, python-dotenv
-- Create `config.py`: API key loading, paths, Chatterbox URL, voice ID
-- Create directory structure: `scripts/`, `audio/`, `sources/`
-- Create `.env.example` with required variables
+**Plan 1.1 — Config Cleanup & Test Infrastructure**
+- Update `config.py`: remove XTTS refs, add Kokoro voice ID, lang code, sample rate
+- Update `requirements.txt`: replace TTS>=0.22.0 with kokoro>=0.9.4, soundfile, pytest
+- Update `.env.example`: remove TTS_REF_WAV, add KOKORO_VOICE_ID
+- Create `tests/conftest.py` for sys.path setup
+- Update ROADMAP.md to reflect Kokoro and Claude Code decisions
+- Delete stale `=0.9.4` directory artifact
+
+**Plan 1.2 — Kokoro TTS Verification & Unit Tests**
+- Create `test_tts.py` — Kokoro am_michael generates WAV audio, verify file output
+- Create unit tests for src/ modules (course_loader, lesson_tracker, transcript_loader)
 - Create `README.md` with setup instructions
 
-**Plan 1.2 — Chatterbox TTS Setup & Verification**
-- Document Chatterbox TTS Server installation steps for Windows (portable mode)
-- Create `test_tts.py` — ping Chatterbox API, generate 5s test audio, verify .mp3 output
-- Test with RTX 3050: confirm GPU mode works or document CPU fallback
-- Select and document best male English voice ID
-
-**Plan 1.3 — Claude API Connection Test**
-- Create `test_claude.py` — simple API call with Anthropic SDK, verify response
-- Confirm API key works, log model being used (claude-sonnet-4-6)
-- Test prompt caching with a simple repeated call
+**Plan 1.3 — Claude Code In-Session (no Python API file needed)**
+- Script generation uses Claude Code in-session — no Python subprocess/API wrapper needed
+- No test file required — Claude Code is the interface
+- Document this decision in README.md
 
 **Success criteria:**
-- [ ] `python test_tts.py` produces a .mp3 file
-- [ ] `python test_claude.py` returns a response
+- [ ] `python test_tts.py` produces a .wav file
+- [ ] `pytest tests/ -v` passes all unit tests
 - [ ] All dependencies installable via `pip install -r requirements.txt`
 
 ---
@@ -112,7 +118,7 @@
 
 ## Phase 4: TTS Audio Generator
 
-**Goal:** Convert any approved script to .mp3 audio via Chatterbox.
+**Goal:** Convert any approved script to WAV audio via Kokoro TTS.
 
 **Requirements covered:** TTS-01 through TTS-05
 
@@ -124,12 +130,11 @@
 - Join into clean narration text suitable for TTS
 - Handle multi-paragraph scripts, preserve natural pause points
 
-**Plan 4.2 — Chatterbox Audio Generator**
-- `src/audio_generator.py` — call Chatterbox via OpenAI-compatible API
-- `POST http://localhost:8004/v1/audio/speech` with narration text + voice ID
+**Plan 4.2 — Kokoro Audio Generator**
+- `src/audio_generator.py` — call Kokoro KPipeline with am_michael voice
 - Handle long texts: split at sentence boundaries if > 2000 chars
-- Concatenate audio chunks if needed (using pydub or simple file concat)
-- Save to `audio/M{module}L{lesson}_{slug}.mp3`
+- Concatenate audio chunks with numpy
+- Save to `audio/M{module}L{lesson}_{slug}.wav`
 
 **Plan 4.3 — Audio Quality Check**
 - After generation: print duration, file size, path
@@ -137,7 +142,7 @@
 - Update lesson status to `audio_done` on success
 
 **Success criteria:**
-- [ ] `python generate.py --audio M1L1` produces a .mp3 from existing script
+- [ ] `python generate.py --audio M1L1` produces a .wav from existing script
 - [ ] Audio duration matches estimated word count (±15%)
 - [ ] Voice sounds natural and clear on 30s spot check
 
@@ -165,7 +170,7 @@
 - `generate.py --dry-run M1L1` — show assembled context, token estimate, no API call
 
 **Plan 5.3 — Error Handling & Resilience**
-- Chatterbox not running: clear error message with start instructions
+- Kokoro not loaded: clear error message with install instructions
 - Claude API error: retry once, then show error with context saved to temp file
 - Missing `sahinlabs_course.txt`: pause with setup instructions
 - Partial audio generation failure: save progress, allow resume
@@ -202,4 +207,4 @@ Sequential — each phase builds on the previous. No parallel phases for this pr
 
 ---
 *Roadmap created: 2026-03-26*
-*Next action: `/gsd:plan-phase 1` in `C:\Users\sahin\projects\course-production`*
+*Last updated: 2026-03-26 — Phase 1 plans created, Kokoro/Claude Code decisions applied*

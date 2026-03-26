@@ -112,28 +112,33 @@ Plans:
 
 **Requirements covered:** TTS-01 through TTS-05
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Narration extractor with TDD tests (Wave 1)
+- [ ] 04-02-PLAN.md — Kokoro audio generator with mocked tests (Wave 2)
+- [ ] 04-03-PLAN.md — generate.py --audio integration + human verification (Wave 2)
+
 ### Plans
 
 **Plan 4.1 — Narration Extractor**
-- `src/narration_extractor.py` — parse script .md file
-- Extract only `[VO]` lines (strip all production markers)
-- Join into clean narration text suitable for TTS
-- Handle multi-paragraph scripts, preserve natural pause points
+- `src/narration_extractor.py` — parse script .md, strip markers and headings, keep plain narration
+- `tests/test_narration_extractor.py` — 8 TDD tests for TTS-02
+- `find_script_path()` — glob SCRIPTS_DIR for lesson ID match
 
 **Plan 4.2 — Kokoro Audio Generator**
-- `src/audio_generator.py` — call Kokoro KPipeline with am_michael voice
-- Handle long texts: split at sentence boundaries if > 2000 chars
-- Concatenate audio chunks with numpy
-- Save to `audio/M{module}L{lesson}_{slug}.wav`
+- `src/audio_generator.py` — lazy KPipeline singleton, sentence-boundary chunking, WAV output
+- `tests/test_audio_generator.py` — 8 tests with mocked KPipeline (TTS-01, TTS-03, TTS-04)
+- Output: `audio/M{m}L{l}_{slug}.wav` at 24000 Hz
 
-**Plan 4.3 — Audio Quality Check**
-- After generation: print duration, file size, path
-- Optional playback prompt: (p)lay / (s)kip
-- Update lesson status to `audio_done` on success
+**Plan 4.3 — Audio Entrypoint + Quality Check**
+- `src/audio_entrypoint.py` — orchestrate extraction, generation, quality stats, status update
+- `generate.py` — add `--audio LESSON_ID` flag via argparse
+- Human verification: run on M0L1, listen to audio, confirm quality (TTS-05)
 
 **Success criteria:**
-- [ ] `python generate.py --audio M1L1` produces a .wav from existing script
-- [ ] Audio duration matches estimated word count (±15%)
+- [ ] `python generate.py --audio M0L1` produces a .wav from existing script
+- [ ] Audio duration matches estimated word count (+-15%)
 - [ ] Voice sounds natural and clear on 30s spot check
 
 ---
@@ -197,4 +202,4 @@ Sequential — each phase builds on the previous. No parallel phases for this pr
 
 ---
 *Roadmap created: 2026-03-26*
-*Last updated: 2026-03-27 — 03-02 complete: review_ui.py + generate.py + human verification approved; Phase 03 done*
+*Last updated: 2026-03-27 — Phase 04 planned: 3 plans in 2 waves*

@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Phase 03 complete — ready for Phase 04 (TTS Audio Generator)
-last_updated: "2026-03-26T22:30:11.334Z"
+status: Executing Phase 04
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-03-26T22:58:25.706Z"
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 8
+  completed_plans: 6
 ---
 
 # Project State
@@ -19,7 +19,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Every lesson has a production-ready English script + TTS audio so Ömer can edit videos without writing or recording from scratch.
-**Current focus:** Phase 03 — script-generator
+**Current focus:** Phase 04 — tts-audio-generator
 
 ## Phase Status
 
@@ -39,6 +39,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 - **03-script-generator:** TextBlockParam from anthropic.types (not anthropic.beta.prompt_caching — removed in SDK 0.84.0)
 - **03-script-generator:** review_ui.py stub created in Plan 01 to satisfy test imports; full UI in Plan 02
 - **03-02:** generate.py wires module selector -> lesson selector -> context assembly -> script generation -> review loop; no CLI args per D-06
+- [Phase 04-tts-audio-generator]: Marker regex ^\[.+\]$ strips standalone bracket lines exactly — inline markers embedded in narration are preserved
 
 ## Performance Metrics
 
@@ -47,6 +48,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 | 02-data-pipeline | 01 | 8min | 2 | 3 |
 | 03-script-generator | 01 | 4min | 3 | 7 |
 | 03-script-generator | 02 | 15min | 3/3 | 2 |
+| Phase 04-tts-audio-generator P01 | 2min | 1 tasks | 2 files |
 
 ## Notes
 
@@ -60,7 +62,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 ## Last Session
 
-- **Stopped at:** Phase 03 complete — ready for Phase 04 (TTS Audio Generator)
+- **Stopped at:** Completed 04-01-PLAN.md
 - **Timestamp:** 2026-03-27T00:00:00Z
 
 ---

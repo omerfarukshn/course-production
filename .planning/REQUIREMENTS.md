@@ -24,7 +24,7 @@
 ### TTS Audio Generation
 
 - [ ] **TTS-01**: Integrate with Chatterbox TTS Server via OpenAI-compatible REST API (`http://localhost:8004/v1/audio/speech`)
-- [ ] **TTS-02**: Extract [VO] narration lines from approved script (strip production markers)
+- [x] **TTS-02**: Extract [VO] narration lines from approved script (strip production markers)
 - [ ] **TTS-03**: Generate .mp3 from narration text using selected male English voice
 - [ ] **TTS-04**: Save audio to `audio/M{n}L{n}_{slug}.mp3`
 - [ ] **TTS-05**: Mark lesson as `audio_done` in status tracker after successful generation
@@ -91,7 +91,7 @@
 | SCRPT-05 | Phase 3 | Complete |
 | SCRPT-06 | Phase 3 | Complete |
 | TTS-01 | Phase 4 | Pending |
-| TTS-02 | Phase 4 | Pending |
+| TTS-02 | Phase 4 | Complete |
 | TTS-03 | Phase 4 | Pending |
 | TTS-04 | Phase 4 | Pending |
 | TTS-05 | Phase 4 | Pending |

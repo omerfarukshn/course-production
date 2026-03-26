@@ -112,10 +112,10 @@ Plans:
 
 **Requirements covered:** TTS-01 through TTS-05
 
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
-- [ ] 04-01-PLAN.md — Narration extractor with TDD tests (Wave 1)
+- [x] 04-01-PLAN.md — Narration extractor with TDD tests (Wave 1)
 - [ ] 04-02-PLAN.md — Kokoro audio generator with mocked tests (Wave 2)
 - [ ] 04-03-PLAN.md — generate.py --audio integration + human verification (Wave 2)
 

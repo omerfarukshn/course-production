@@ -116,8 +116,8 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md — Narration extractor with TDD tests (Wave 1)
-- [ ] 04-02-PLAN.md — Kokoro audio generator with mocked tests (Wave 2)
-- [ ] 04-03-PLAN.md — generate.py --audio integration + human verification (Wave 2)
+- [x] 04-02-PLAN.md — Kokoro audio generator with mocked tests (Wave 2)
+- [x] 04-03-PLAN.md — generate.py --audio integration + human verification (Wave 2)
 
 ### Plans
 

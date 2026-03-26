@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Executing Phase 04
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-26T22:58:25.706Z"
+status: Ready to plan
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-26T23:30:09.124Z"
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 8
 ---
 
 # Project State
@@ -40,6 +40,8 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 - **03-script-generator:** review_ui.py stub created in Plan 01 to satisfy test imports; full UI in Plan 02
 - **03-02:** generate.py wires module selector -> lesson selector -> context assembly -> script generation -> review loop; no CLI args per D-06
 - [Phase 04-tts-audio-generator]: Marker regex ^\[.+\]$ strips standalone bracket lines exactly — inline markers embedded in narration are preserved
+- [Phase 04-tts-audio-generator]: chunk_text() defaults max_chars=2000 — fits Kokoro context safely while minimizing chunks
+- [Phase 04-tts-audio-generator]: Lazy singleton pattern: _get_pipeline() loads Kokoro model once on first generate_audio() call
 
 ## Performance Metrics
 
@@ -49,6 +51,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 | 03-script-generator | 01 | 4min | 3 | 7 |
 | 03-script-generator | 02 | 15min | 3/3 | 2 |
 | Phase 04-tts-audio-generator P01 | 2min | 1 tasks | 2 files |
+| Phase 04-tts-audio-generator P02 | 8min | 1 tasks | 2 files |
 
 ## Notes
 
@@ -62,7 +65,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 ## Last Session
 
-- **Stopped at:** Completed 04-01-PLAN.md
+- **Stopped at:** Completed 04-02-PLAN.md
 - **Timestamp:** 2026-03-27T00:00:00Z
 
 ---

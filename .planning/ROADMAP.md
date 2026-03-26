@@ -77,11 +77,11 @@ Plans:
 
 **Requirements covered:** SCRPT-01 through SCRPT-06
 
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 03-01-PLAN.md — Test stubs + context_builder.py + script_generator.py (backend)
-- [~] 03-02-PLAN.md — review_ui.py + generate.py entrypoint + human verification (Tasks 1-2 done, Task 3 awaiting verification)
+- [x] 03-02-PLAN.md — review_ui.py + generate.py entrypoint + human verification (all 3 tasks complete)
 
 ### Plans
 
@@ -197,4 +197,4 @@ Sequential — each phase builds on the previous. No parallel phases for this pr
 
 ---
 *Roadmap created: 2026-03-26*
-*Last updated: 2026-03-27 — 03-02 Tasks 1-2 complete: review_ui.py + generate.py; awaiting Task 3 human verification*
+*Last updated: 2026-03-27 — 03-02 complete: review_ui.py + generate.py + human verification approved; Phase 03 done*

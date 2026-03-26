@@ -7,10 +7,10 @@
 
 ### Data Pipeline
 
-- [ ] **DATA-01**: Load and index `bootcamp_transcripts.json` (98 files, keyword-scored search)
-- [ ] **DATA-02**: Load SahinLabs course content from `sources/sahinlabs_course.txt`
-- [ ] **DATA-03**: Build lesson index: M0-M5 × all sub-lessons, with status tracking per lesson
-- [ ] **DATA-04**: Save lesson status to disk (`sources/lesson_status.json`) — persists between sessions
+- [x] **DATA-01**: Load and index `bootcamp_transcripts.json` (98 files, keyword-scored search)
+- [x] **DATA-02**: Load SahinLabs course content from `sources/sahinlabs_course.txt`
+- [x] **DATA-03**: Build lesson index: M0-M5 × all sub-lessons, with status tracking per lesson
+- [x] **DATA-04**: Save lesson status to disk (`sources/lesson_status.json`) — persists between sessions
 
 ### Script Generation
 
@@ -80,10 +80,10 @@
 | SETUP-01 | Phase 1 | Pending |
 | SETUP-02 | Phase 1 | Pending |
 | SETUP-03 | Phase 1 | Pending |
-| DATA-01 | Phase 2 | Pending |
-| DATA-02 | Phase 2 | Pending |
-| DATA-03 | Phase 2 | Pending |
-| DATA-04 | Phase 2 | Pending |
+| DATA-01 | Phase 2 | Complete |
+| DATA-02 | Phase 2 | Complete |
+| DATA-03 | Phase 2 | Complete |
+| DATA-04 | Phase 2 | Complete |
 | SCRPT-01 | Phase 3 | Pending |
 | SCRPT-02 | Phase 3 | Pending |
 | SCRPT-03 | Phase 3 | Pending |

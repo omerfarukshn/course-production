@@ -39,6 +39,11 @@ You're going to use three reference images, each from a different angle, to lock
 The result? A character that looks identical every single time you generate.
 [SCREEN RECORDING: Side-by-side comparison of consistent outputs from the same character]
 
+CONTENT PRIORITY RULES:
+- The LESSON OUTLINE is your PRIMARY source — follow its topic, key points, and structure exactly.
+- The BOOTCAMP CONTEXT is REFERENCE ONLY — extract tone, examples, and insights that reinforce the lesson outline. Never follow bootcamp tool names or workflows if they conflict with the lesson outline.
+- The script title must match the lesson title, not bootcamp section headings.
+
 Write the complete lesson script now. Remember: {SCRIPT_MIN_WORDS}-{SCRIPT_MAX_WORDS} words, inline format, production markers between narration lines."""
 
 
@@ -79,12 +84,12 @@ def generate_script(
     user_content = [
         {
             "type": "text",
-            "text": f"BOOTCAMP CONTEXT:\n{bootcamp_excerpts}",
+            "text": f"BOOTCAMP CONTEXT (reference only):\n{bootcamp_excerpts}",
             "cache_control": {"type": "ephemeral"},
         },
         {
             "type": "text",
-            "text": f"LESSON OUTLINE:\n{lesson_outline}"
+            "text": f"LESSON OUTLINE (primary source — write this script):\n{lesson_outline}"
             + (f"\n\nRevision note: {revision_note}" if revision_note else ""),
         },
     ]

@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-03-26",
+  "phase": "pre-phase1",
+  "phase_name": "Setup & TTS Selection",
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 1, "name": "TTS araştırma — XTTS/F5/Kokoro/MOSS test", "status": "done"},
+    {"id": 2, "name": "Kokoro am_michael onaylandı", "status": "done"},
+    {"id": 3, "name": "config.py yazıldı", "status": "done"},
+    {"id": 4, "name": "src/course_loader.py — 33 ders parse", "status": "done"},
+    {"id": 5, "name": "src/lesson_tracker.py — status JSON", "status": "done"},
+    {"id": 6, "name": "src/transcript_loader.py — keyword search", "status": "done"}
+  ],
+  "remaining_tasks": [
+    {"id": 7, "name": "gsd:plan-phase 1", "status": "not_started"},
+    {"id": 8, "name": "gsd:execute-phase 1", "status": "not_started"},
+    {"id": 9, "name": "Phase 3: script generator (Claude Code in-session)", "status": "not_started"},
+    {"id": 10, "name": "Phase 4: audio generator (Kokoro am_michael)", "status": "not_started"},
+    {"id": 11, "name": "Phase 5: generate.py CLI", "status": "not_started"}
+  ],
+  "blockers": [],
+  "human_actions_pending": [],
+  "decisions": [
+    {"decision": "TTS: Kokoro am_michael", "rationale": "TTS Arena #1, 4GB VRAM, ücretsiz, uzun test geçti"},
+    {"decision": "Script üretimi: Claude Code in-session (API yok)", "rationale": "Ömer'in talebi — Python API çağrısı değil"},
+    {"decision": "MOSS-TTS reddedildi", "rationale": "8GB VRAM gerekiyor, 4GB ile uyumsuz"},
+    {"decision": "Voice cloning reddedildi", "rationale": "Hukuki risk + kalite sorunu"}
+  ],
+  "uncommitted_files": [
+    "config.py", "requirements.txt", ".env.example",
+    "src/course_loader.py", "src/lesson_tracker.py", "src/transcript_loader.py",
+    "src/__init__.py", "sources/lesson_status.json"
+  ],
+  "next_action": "cd C:\\Users\\sahin\\projects\\course-production && /gsd:plan-phase 1",
+  "context_notes": "Phase 1-2 altyapı kodları hazır. ROADMAP.md'deki Chatterbox/Claude API referanslarını Kokoro/Claude Code ile güncellemek gerekebilir. Interaktif workflow: ders ders script üret → onayla → audio oluştur."
+}

@@ -2,20 +2,33 @@
 generate.py — Main entrypoint for the script generation workflow.
 
 Usage:
-    python generate.py
+    python generate.py                     # Interactive script generation
+    python generate.py --audio LESSON_ID   # Generate audio for existing script (e.g. M0L1)
 
 Flow: module selector -> lesson selector -> context assembly -> script generation -> review loop
 """
+import argparse
+
 from rich.console import Console
 
 from src.review_ui import show_module_menu, show_lesson_menu, review_script
 from src.context_builder import assemble_context
 from src.script_generator import generate_script
+from src.audio_entrypoint import run_audio_generation
 
 console = Console()
 
 
 def main():
+    parser = argparse.ArgumentParser(description="SahinLabs Course Production")
+    parser.add_argument('--audio', metavar='LESSON_ID',
+                        help='Generate audio for lesson with existing script (e.g. M0L1)')
+    args, _ = parser.parse_known_args()
+
+    if args.audio:
+        run_audio_generation(args.audio)
+        return
+
     while True:
         module = show_module_menu()
         if module is None:

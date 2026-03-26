@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Executing Phase 03
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-26T19:37:46Z"
+stopped_at: "Phase 03, Plan 03-02, at Task 3 checkpoint (human verification)"
+last_updated: "2026-03-27T00:00:00Z"
 progress:
   total_phases: 5
   completed_phases: 2
@@ -38,6 +38,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 - **02-data-pipeline:** test_set_status_valid uses patch.object on LESSON_STATUS_FILE for test isolation
 - **03-script-generator:** TextBlockParam from anthropic.types (not anthropic.beta.prompt_caching — removed in SDK 0.84.0)
 - **03-script-generator:** review_ui.py stub created in Plan 01 to satisfy test imports; full UI in Plan 02
+- **03-02:** generate.py wires module selector -> lesson selector -> context assembly -> script generation -> review loop; no CLI args per D-06
 
 ## Performance Metrics
 
@@ -45,6 +46,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 |-------|------|----------|-------|-------|
 | 02-data-pipeline | 01 | 8min | 2 | 3 |
 | 03-script-generator | 01 | 4min | 3 | 7 |
+| 03-script-generator | 02 | 5min | 2/3 | 2 |
 
 ## Notes
 
@@ -54,11 +56,12 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 - 33 ders tanımlandı, pytest altyapısı hazır ✅
 - **02-01 tamamlandı:** excerpt_chars=1500, deterministic sort, test isolation — 18 tests green ✅
 - **03-01 tamamlandı:** context_builder, script_generator, review_ui stub — 33 tests green ✅
+- **03-02 (Tasks 1-2) tamamlandı:** review_ui.py full implementation + generate.py entrypoint — awaiting Task 3 human verification ⏳
 
 ## Last Session
 
-- **Stopped at:** Completed 03-01-PLAN.md
-- **Timestamp:** 2026-03-26T19:37:46Z
+- **Stopped at:** Phase 03, Plan 03-02, at Task 3 checkpoint (human verification)
+- **Timestamp:** 2026-03-27T00:00:00Z
 
 ---
 *State initialized: 2026-03-26*

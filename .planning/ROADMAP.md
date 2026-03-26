@@ -81,7 +81,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md — Test stubs + context_builder.py + script_generator.py (backend)
-- [ ] 03-02-PLAN.md — review_ui.py + generate.py entrypoint + human verification
+- [~] 03-02-PLAN.md — review_ui.py + generate.py entrypoint + human verification (Tasks 1-2 done, Task 3 awaiting verification)
 
 ### Plans
 
@@ -197,4 +197,4 @@ Sequential — each phase builds on the previous. No parallel phases for this pr
 
 ---
 *Roadmap created: 2026-03-26*
-*Last updated: 2026-03-26 — 03-01 complete: context_builder, script_generator, 33 tests green*
+*Last updated: 2026-03-27 — 03-02 Tasks 1-2 complete: review_ui.py + generate.py; awaiting Task 3 human verification*

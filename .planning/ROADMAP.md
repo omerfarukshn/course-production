@@ -80,7 +80,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Test stubs + context_builder.py + script_generator.py (backend)
+- [x] 03-01-PLAN.md — Test stubs + context_builder.py + script_generator.py (backend)
 - [ ] 03-02-PLAN.md — review_ui.py + generate.py entrypoint + human verification
 
 ### Plans
@@ -197,4 +197,4 @@ Sequential — each phase builds on the previous. No parallel phases for this pr
 
 ---
 *Roadmap created: 2026-03-26*
-*Last updated: 2026-03-26 — Phase 3 plans created (2 plans, 2 waves)*
+*Last updated: 2026-03-26 — 03-01 complete: context_builder, script_generator, 33 tests green*

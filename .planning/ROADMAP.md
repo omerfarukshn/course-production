@@ -50,30 +50,24 @@ Plans:
 
 **Requirements covered:** DATA-01, DATA-02, DATA-03, DATA-04
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 02-01-PLAN.md — Gap closure: excerpt_chars param, deterministic sort, test isolation
+
 ### Plans
 
-**Plan 2.1 — Transcript Indexer**
-- `src/transcript_loader.py` — load `bootcamp_transcripts.json`, build keyword index
-- `find_relevant_transcripts(lesson_keywords, max_results=5)` — score by keyword frequency
-- Return: list of (score, filename, transcript_text) tuples
-- Unit test: query "character consistency nano banana" → returns files 31, 32, 36
-
-**Plan 2.2 — Course Content Loader**
-- `src/course_loader.py` — parse `sources/sahinlabs_course.txt`
-- Parse modules (M0-M5) and lessons into structured dict
-- `get_lesson(module, lesson_num)` → returns lesson title + outline text
-- Handle gracefully if file not yet present (show friendly message, pause)
-
-**Plan 2.3 — Lesson Status Tracker**
-- `src/lesson_tracker.py` — load/save `sources/lesson_status.json`
-- Status per lesson: `pending` | `scripted` | `audio_done`
-- Methods: `get_status(lesson_id)`, `set_status(lesson_id, status)`, `get_all()`
-- Initialize from course loader — create entry for every lesson on first run
+**Plan 2.1 — Gap Closure (Verification + Fixes)**
+- Close DATA-01 gaps: add `excerpt_chars` parameter to `find_relevant_transcripts()`, add secondary sort for determinism
+- Close DATA-03 gaps: isolate `test_set_status_valid` with `tmp_path`, add `test_init_idempotent`
+- DATA-02 and DATA-04 already fully satisfied from Phase 1 — no changes needed
+- All modules were built in Phase 1; this phase verifies and closes 4 specific gaps
 
 **Success criteria:**
 - [ ] Transcript search returns relevant results for test queries
 - [ ] Course content parses all 30+ lessons from .txt
 - [ ] Status file persists between Python runs
+- [ ] `python -m pytest tests/ -v` shows 18 tests passed
 
 ---
 
@@ -207,4 +201,4 @@ Sequential — each phase builds on the previous. No parallel phases for this pr
 
 ---
 *Roadmap created: 2026-03-26*
-*Last updated: 2026-03-26 — Phase 1 plans created, Kokoro/Claude Code decisions applied*
+*Last updated: 2026-03-26 — Phase 2 plans created (1 plan, gap closure)*

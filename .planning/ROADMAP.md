@@ -77,36 +77,32 @@ Plans:
 
 **Requirements covered:** SCRPT-01 through SCRPT-06
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Test stubs + context_builder.py + script_generator.py (backend)
+- [ ] 03-02-PLAN.md — review_ui.py + generate.py entrypoint + human verification
+
 ### Plans
 
-**Plan 3.1 — Context Assembler**
-- `src/context_builder.py` — for a given lesson:
-  - Get lesson outline from course loader
-  - Extract lesson title keywords for transcript search
-  - Fetch top-5 relevant bootcamp transcript segments
-  - Return assembled context string (lesson outline + bootcamp excerpts)
-- Include token count estimate in output
+**Plan 3.1 — Backend: Context Assembly + Script Generation**
+- Wave 0 test stubs for all 3 Phase 3 test files (14 tests)
+- `src/context_builder.py` — assemble lesson outline + bootcamp excerpts, list modules/lessons, save script + update status
+- `src/script_generator.py` — Claude API with TextBlockParam prompt caching, lazy client init
+- Add `anthropic>=0.84.0` to requirements.txt
 
-**Plan 3.2 — Claude Script Generator**
-- `src/script_generator.py` — Claude API integration
-- System prompt: tone (enthusiastic educator), AV script format definition, production marker guide, examples
-- Use `anthropic.beta.prompt_caching` — cache system prompt + full bootcamp index
-- Per-lesson call: inject lesson outline + assembled context
-- Parse response into structured script object
-
-**Plan 3.3 — Script Review CLI**
-- `src/review_ui.py` — using `rich` for formatted terminal output
-- Display generated script with syntax highlighting for production markers
-- Options: (a)ccept / (e)dit in $EDITOR / (r)egenerate with note / (s)kip
-- On accept: save to `scripts/M{module}L{lesson}_{slug}.md`
-- Update lesson status to `scripted`
+**Plan 3.2 — Frontend: Review UI + Entrypoint**
+- `src/review_ui.py` — rich module/lesson menus, script display, (a)ccept/(e)dit/(r)egenerate/(s)kip loop
+- `generate.py` — main entrypoint wiring context_builder + script_generator + review_ui
+- Human verification checkpoint: full interactive flow test
 
 **Success criteria:**
-- [ ] Running `python generate.py --lesson M1L1` generates a complete script
+- [ ] Running `python generate.py` shows module selector (no CLI args needed)
 - [ ] Script saved as properly named .md file
 - [ ] Script contains [SCREEN RECORDING] / [IMAGE] / [VIDEO] markers
-- [ ] Script is 400-800 words (3-5 minute lesson)
+- [ ] Script is 300-600 words (per config constants)
 - [ ] Lesson status updates to `scripted` after accept
+- [ ] 32+ tests pass (18 prior + 14 new)
 
 ---
 
@@ -201,4 +197,4 @@ Sequential — each phase builds on the previous. No parallel phases for this pr
 
 ---
 *Roadmap created: 2026-03-26*
-*Last updated: 2026-03-26 — Phase 2 plans created (1 plan, gap closure)*
+*Last updated: 2026-03-26 — Phase 3 plans created (2 plans, 2 waves)*

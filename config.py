@@ -18,10 +18,11 @@ COURSE_FILE          = SOURCES_DIR / "sahinlabs_course.txt"
 LESSON_STATUS_FILE   = SOURCES_DIR / "lesson_status.json"
 BOOTCAMP_TRANSCRIPTS = Path(os.getenv("BOOTCAMP_TRANSCRIPTS", r"C:\Users\sahin\bootcamp_transcripts.json"))
 
-# Kokoro TTS
-KOKORO_VOICE_ID    = os.getenv("KOKORO_VOICE_ID", "am_michael")
-KOKORO_LANG_CODE   = "a"   # American English
-KOKORO_SAMPLE_RATE = 24000
+# ElevenLabs TTS
+ELEVENLABS_API_KEY    = os.getenv("ELEVENLABS_API_KEY", "")
+ELEVENLABS_VOICE_ID   = "Cz0K1kOv9tD8l0b5Qu53"  # Jon
+ELEVENLABS_MODEL_ID   = "eleven_turbo_v2_5"
+ELEVENLABS_API_URL    = f"https://api.elevenlabs.io/v1/text-to-speech/{ELEVENLABS_VOICE_ID}"
 
 # Script generation
 SCRIPT_MIN_WORDS = 300

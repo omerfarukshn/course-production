@@ -147,34 +147,40 @@ Plans:
 
 **Goal:** Single unified CLI with full lesson list, status view, and smooth end-to-end flow.
 
-**Requirements covered:** WRK-01 through WRK-04
+**Requirements covered:** TTS-05, WRK-01 through WRK-04
+
+**Plans:** 3 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — ElevenLabs TTS backend (replace Kokoro), config update, tests rewrite
+- [ ] 05-02-PLAN.md — Startup status table + --list flag (WRK-01, WRK-03)
+- [ ] 05-03-PLAN.md — --lesson unified flow + --dry-run + error handling + human verify (WRK-02, WRK-04)
 
 ### Plans
 
-**Plan 5.1 — Main CLI Menu**
-- `generate.py` — main entry point using `rich` table display
-- Startup: show all lessons with status (color-coded: pending/scripted/audio_done)
-- Module headers grouping lessons
-- Summary: "X pending scripts, Y awaiting audio, Z complete"
+**Plan 5.1 — ElevenLabs TTS Backend (Wave 1)**
+- Replace Kokoro with ElevenLabs Jon voice (ID: Cz0K1kOv9tD8l0b5Qu53)
+- `config.py`: remove KOKORO_*, add ELEVENLABS_* constants
+- `src/audio_generator.py`: rewrite to call ElevenLabs REST API, save .mp3
+- `tests/test_audio_generator.py`: rewrite to mock requests.post
 
-**Plan 5.2 — Unified Lesson Flow**
-- `generate.py --lesson M1L1` — full flow: context → script → review → audio in one command
-- `generate.py --list` — show lesson status table
-- `generate.py --script-only M1L1` — generate script, skip audio
-- `generate.py --audio-only M1L1` — generate audio from existing script
-- `generate.py --dry-run M1L1` — show assembled context, token estimate, no API call
+**Plan 5.2 — Startup Status Table (Wave 1, parallel with 5.1)**
+- `generate.py`: add show_status_table() grouped by module with emoji per status
+- `--list` flag: print table and exit (WRK-01, WRK-03)
 
-**Plan 5.3 — Error Handling & Resilience**
-- Kokoro not loaded: clear error message with install instructions
-- Claude API error: retry once, then show error with context saved to temp file
-- Missing `sahinlabs_course.txt`: pause with setup instructions
-- Partial audio generation failure: save progress, allow resume
+**Plan 5.3 — Unified Lesson Flow (Wave 2)**
+- `generate.py --lesson M0L1`: full flow context → script → review → audio prompt
+- `generate.py --dry-run M0L1`: show assembled context + token estimate, no API calls
+- Actionable error messages throughout ("Fix: ...")
+- Claude API retry once on error with 10s delay
+- Human verification checkpoint
 
 **Success criteria:**
 - [ ] `python generate.py` shows formatted lesson status table
 - [ ] `python generate.py --lesson M0L1` completes end-to-end in < 2 minutes
-- [ ] Error messages are actionable (tell you what to do)
+- [ ] Error messages are actionable (contain "Fix:")
 - [ ] Dry-run works without any API calls
+- [ ] Audio saved as .mp3 via ElevenLabs Jon voice
 
 ---
 
@@ -202,4 +208,4 @@ Sequential — each phase builds on the previous. No parallel phases for this pr
 
 ---
 *Roadmap created: 2026-03-26*
-*Last updated: 2026-03-27 — Phase 04 planned: 3 plans in 2 waves*
+*Last updated: 2026-03-27 — Phase 05 planned: 3 plans in 2 waves*

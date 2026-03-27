@@ -1,104 +1,89 @@
 """
 Unit tests for audio_generator module.
-Uses mocked KPipeline — no actual GPU or model load needed.
+Uses mocked requests.post — no actual API call, no GPU needed.
 """
 import pytest
-import numpy as np
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 
-def _make_mock_pipeline():
-    """Create a mock KPipeline that yields Result-like objects with .audio tensors."""
-    mock_pipeline_instance = MagicMock()
-    # Each call to pipeline(text, voice=..., speed=...) returns iterator of results
-    mock_result = MagicMock()
-    # Simulate a 1-second audio chunk at 24000 Hz
-    mock_result.audio = MagicMock()
-    mock_result.audio.numpy.return_value = np.zeros(24000, dtype=np.float32)
-    mock_pipeline_instance.__call__ = MagicMock(return_value=iter([mock_result]))
-    mock_pipeline_instance.return_value = iter([mock_result])
-    # Make it callable
-    mock_pipeline_instance.side_effect = lambda text, voice=None, speed=1.0: iter([mock_result])
-    return mock_pipeline_instance
+def _make_mock_response(status_code=200, content=b"fake_mp3_bytes"):
+    """Create a mock requests.Response-like object."""
+    mock_resp = MagicMock()
+    mock_resp.status_code = status_code
+    mock_resp.content = content
+    mock_resp.text = "Invalid API key" if status_code != 200 else ""
+    return mock_resp
 
 
-def test_chunk_text_short():
-    from src.audio_generator import chunk_text
-    result = chunk_text("Hello world.")
-    assert result == ["Hello world."]
+def test_text_cleaner_strips_extra_whitespace():
+    from src.audio_generator import text_cleaner
+    result = text_cleaner("hello   world\n\nfoo")
+    assert result == "hello world foo"
 
 
-def test_chunk_text_long():
-    from src.audio_generator import chunk_text
-    # Build a string of ~3000 chars from repeated sentences
-    sentences = ["This is sentence number {}.".format(i) for i in range(120)]
-    text = " ".join(sentences)
-    assert len(text) > 2000
-    chunks = chunk_text(text, max_chars=2000)
-    assert len(chunks) >= 2
-    for chunk in chunks:
-        assert len(chunk) <= 2000
+def test_text_cleaner_expands_abbreviations():
+    from src.audio_generator import text_cleaner
+    assert text_cleaner("e.g. this") == "for example this"
+    assert text_cleaner("vs. that") == "versus that"
+    assert text_cleaner("w/ something") == "with something"
 
 
-def test_chunk_text_preserves_sentences():
-    from src.audio_generator import chunk_text
-    result = chunk_text("First sentence. Second sentence. Third sentence.", max_chars=35)
-    # Each chunk should contain complete sentences
-    for chunk in result:
-        # No chunk should end mid-word (no truncation)
-        assert chunk.endswith(".") or chunk.endswith("!") or chunk.endswith("?") or chunk == ""
-
-
-def test_generate_audio_creates_wav(tmp_path):
-    mock_pipeline = _make_mock_pipeline()
-    with patch("src.audio_generator._get_pipeline", return_value=mock_pipeline), \
+def test_generate_audio_creates_mp3(tmp_path):
+    with patch("src.audio_generator.requests.post", return_value=_make_mock_response()), \
          patch("src.audio_generator.AUDIO_DIR", tmp_path):
         from src.audio_generator import generate_audio
         result = generate_audio("M0L1", "Hello world.", "welcome")
         assert result["path"].exists()
-        assert result["path"].suffix == ".wav"
+        assert result["path"].suffix == ".mp3"
 
 
 def test_generate_audio_filename_pattern(tmp_path):
-    mock_pipeline = _make_mock_pipeline()
-    with patch("src.audio_generator._get_pipeline", return_value=mock_pipeline), \
+    with patch("src.audio_generator.requests.post", return_value=_make_mock_response()), \
          patch("src.audio_generator.AUDIO_DIR", tmp_path):
         from src.audio_generator import generate_audio
         result = generate_audio("M0L1", "Hello world.", "welcome")
-        assert result["path"].name == "M0L1_welcome.wav"
+        assert result["path"].name == "M0L1_welcome.mp3"
 
 
-def test_generate_audio_calls_pipeline_with_voice(tmp_path):
-    mock_pipeline = _make_mock_pipeline()
-    with patch("src.audio_generator._get_pipeline", return_value=mock_pipeline), \
+def test_generate_audio_calls_elevenlabs_endpoint(tmp_path):
+    mock_post = MagicMock(return_value=_make_mock_response())
+    with patch("src.audio_generator.requests.post", mock_post), \
          patch("src.audio_generator.AUDIO_DIR", tmp_path):
         from src.audio_generator import generate_audio
         generate_audio("M0L1", "Hello.", "welcome")
-        # Verify pipeline was called with correct voice
-        call_args = mock_pipeline.call_args
-        assert call_args[1].get("voice") == "am_michael" or \
-               (len(call_args[0]) > 1 and call_args[0][1] == "am_michael")
+        call_args = mock_post.call_args
+        url = call_args[0][0]
+        assert "Cz0K1kOv9tD8l0b5Qu53" in url
 
 
-def test_generate_audio_chunks_long_text(tmp_path):
-    mock_pipeline = _make_mock_pipeline()
-    with patch("src.audio_generator._get_pipeline", return_value=mock_pipeline), \
+def test_generate_audio_sends_correct_voice_settings(tmp_path):
+    mock_post = MagicMock(return_value=_make_mock_response())
+    with patch("src.audio_generator.requests.post", mock_post), \
          patch("src.audio_generator.AUDIO_DIR", tmp_path):
         from src.audio_generator import generate_audio
-        long_text = " ".join(["Sentence number {}.".format(i) for i in range(150)])
-        assert len(long_text) > 2000
-        generate_audio("M0L1", long_text, "welcome")
-        # Pipeline should be called more than once (once per chunk)
-        assert mock_pipeline.call_count >= 2
+        generate_audio("M0L1", "Hello.", "welcome")
+        call_kwargs = mock_post.call_args[1]
+        voice_settings = call_kwargs["json"]["voice_settings"]
+        assert voice_settings["stability"] == 0.40
+        assert voice_settings["similarity_boost"] == 0.88
+        assert voice_settings["style"] == 0.15
+        assert voice_settings["use_speaker_boost"] is True
 
 
 def test_generate_audio_returns_path_and_duration(tmp_path):
-    mock_pipeline = _make_mock_pipeline()
-    with patch("src.audio_generator._get_pipeline", return_value=mock_pipeline), \
+    with patch("src.audio_generator.requests.post", return_value=_make_mock_response()), \
          patch("src.audio_generator.AUDIO_DIR", tmp_path):
         from src.audio_generator import generate_audio
         result = generate_audio("M0L1", "Hello world.", "welcome")
         assert isinstance(result["path"], Path)
         assert isinstance(result["duration"], float)
         assert result["duration"] > 0
+
+
+def test_generate_audio_raises_on_api_error(tmp_path):
+    with patch("src.audio_generator.requests.post", return_value=_make_mock_response(status_code=401)), \
+         patch("src.audio_generator.AUDIO_DIR", tmp_path):
+        from src.audio_generator import generate_audio
+        with pytest.raises(RuntimeError, match="ElevenLabs API error \\(401\\)"):
+            generate_audio("M0L1", "Hello.", "welcome")

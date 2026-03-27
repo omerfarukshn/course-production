@@ -1,211 +1,34 @@
 # Roadmap: SahinLabs Course Production System
 
-**Created:** 2026-03-26
-**Milestone:** v1.0 — Production-Ready Script + Audio Generator
+## Milestones
 
----
+- ✅ **v1.0 Production-Ready Script + Audio Generator** — Phases 1–5 (shipped 2026-03-27)
 
-## Phase 1: Project Setup & Environment
+## Phases
 
-**Goal:** Working Python environment with Kokoro TTS verified and project config aligned to decisions.
+<details>
+<summary>✅ v1.0 Production-Ready Script + Audio Generator (Phases 1–5) — SHIPPED 2026-03-27</summary>
 
-**Requirements covered:** SETUP-01, SETUP-02, SETUP-03
+- [x] Phase 1: Project Setup & Environment (2/2 plans) — completed 2026-03-26
+- [x] Phase 2: Data Pipeline (1/1 plan) — completed 2026-03-26
+- [x] Phase 3: Script Generator (2/2 plans) — completed 2026-03-27
+- [x] Phase 4: TTS Audio Generator (3/3 plans) — completed 2026-03-27
+- [x] Phase 5: Integrated Workflow & Polish (3/3 plans) — completed 2026-03-27
 
-**Plans:** 2 plans
+Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 
-Plans:
-- [ ] 01-01-PLAN.md — Config cleanup and test infrastructure
-- [ ] 01-02-PLAN.md — Kokoro TTS verification, unit tests, and README
+</details>
 
-### Plans
+## Progress
 
-**Plan 1.1 — Config Cleanup & Test Infrastructure**
-- Update `config.py`: remove XTTS refs, add Kokoro voice ID, lang code, sample rate
-- Update `requirements.txt`: replace TTS>=0.22.0 with kokoro>=0.9.4, soundfile, pytest
-- Update `.env.example`: remove TTS_REF_WAV, add KOKORO_VOICE_ID
-- Create `tests/conftest.py` for sys.path setup
-- Update ROADMAP.md to reflect Kokoro and Claude Code decisions
-- Delete stale `=0.9.4` directory artifact
-
-**Plan 1.2 — Kokoro TTS Verification & Unit Tests**
-- Create `test_tts.py` — Kokoro am_michael generates WAV audio, verify file output
-- Create unit tests for src/ modules (course_loader, lesson_tracker, transcript_loader)
-- Create `README.md` with setup instructions
-
-**Plan 1.3 — Claude Code In-Session (no Python API file needed)**
-- Script generation uses Claude Code in-session — no Python subprocess/API wrapper needed
-- No test file required — Claude Code is the interface
-- Document this decision in README.md
-
-**Success criteria:**
-- [ ] `python test_tts.py` produces a .wav file
-- [ ] `pytest tests/ -v` passes all unit tests
-- [ ] All dependencies installable via `pip install -r requirements.txt`
-
----
-
-## Phase 2: Data Pipeline
-
-**Goal:** All course content loaded and searchable; lesson index built with status tracking.
-
-**Requirements covered:** DATA-01, DATA-02, DATA-03, DATA-04
-
-**Plans:** 1/1 plans complete
-
-Plans:
-- [x] 02-01-PLAN.md — Gap closure: excerpt_chars param, deterministic sort, test isolation
-
-### Plans
-
-**Plan 2.1 — Gap Closure (Verification + Fixes)**
-- Close DATA-01 gaps: add `excerpt_chars` parameter to `find_relevant_transcripts()`, add secondary sort for determinism
-- Close DATA-03 gaps: isolate `test_set_status_valid` with `tmp_path`, add `test_init_idempotent`
-- DATA-02 and DATA-04 already fully satisfied from Phase 1 — no changes needed
-- All modules were built in Phase 1; this phase verifies and closes 4 specific gaps
-
-**Success criteria:**
-- [ ] Transcript search returns relevant results for test queries
-- [ ] Course content parses all 30+ lessons from .txt
-- [ ] Status file persists between Python runs
-- [ ] `python -m pytest tests/ -v` shows 18 tests passed
-
----
-
-## Phase 3: Script Generator
-
-**Goal:** Interactive lesson selection → context assembly → Claude script generation → review → save.
-
-**Requirements covered:** SCRPT-01 through SCRPT-06
-
-**Plans:** 2/2 plans complete
-
-Plans:
-- [x] 03-01-PLAN.md — Test stubs + context_builder.py + script_generator.py (backend)
-- [x] 03-02-PLAN.md — review_ui.py + generate.py entrypoint + human verification (all 3 tasks complete)
-
-### Plans
-
-**Plan 3.1 — Backend: Context Assembly + Script Generation**
-- Wave 0 test stubs for all 3 Phase 3 test files (14 tests)
-- `src/context_builder.py` — assemble lesson outline + bootcamp excerpts, list modules/lessons, save script + update status
-- `src/script_generator.py` — Claude API with TextBlockParam prompt caching, lazy client init
-- Add `anthropic>=0.84.0` to requirements.txt
-
-**Plan 3.2 — Frontend: Review UI + Entrypoint**
-- `src/review_ui.py` — rich module/lesson menus, script display, (a)ccept/(e)dit/(r)egenerate/(s)kip loop
-- `generate.py` — main entrypoint wiring context_builder + script_generator + review_ui
-- Human verification checkpoint: full interactive flow test
-
-**Success criteria:**
-- [ ] Running `python generate.py` shows module selector (no CLI args needed)
-- [ ] Script saved as properly named .md file
-- [ ] Script contains [SCREEN RECORDING] / [IMAGE] / [VIDEO] markers
-- [ ] Script is 300-600 words (per config constants)
-- [ ] Lesson status updates to `scripted` after accept
-- [ ] 32+ tests pass (18 prior + 14 new)
-
----
-
-## Phase 4: TTS Audio Generator
-
-**Goal:** Convert any approved script to WAV audio via Kokoro TTS.
-
-**Requirements covered:** TTS-01 through TTS-05
-
-**Plans:** 1/3 plans executed
-
-Plans:
-- [x] 04-01-PLAN.md — Narration extractor with TDD tests (Wave 1)
-- [x] 04-02-PLAN.md — Kokoro audio generator with mocked tests (Wave 2)
-- [x] 04-03-PLAN.md — generate.py --audio integration + human verification (Wave 2)
-
-### Plans
-
-**Plan 4.1 — Narration Extractor**
-- `src/narration_extractor.py` — parse script .md, strip markers and headings, keep plain narration
-- `tests/test_narration_extractor.py` — 8 TDD tests for TTS-02
-- `find_script_path()` — glob SCRIPTS_DIR for lesson ID match
-
-**Plan 4.2 — Kokoro Audio Generator**
-- `src/audio_generator.py` — lazy KPipeline singleton, sentence-boundary chunking, WAV output
-- `tests/test_audio_generator.py` — 8 tests with mocked KPipeline (TTS-01, TTS-03, TTS-04)
-- Output: `audio/M{m}L{l}_{slug}.wav` at 24000 Hz
-
-**Plan 4.3 — Audio Entrypoint + Quality Check**
-- `src/audio_entrypoint.py` — orchestrate extraction, generation, quality stats, status update
-- `generate.py` — add `--audio LESSON_ID` flag via argparse
-- Human verification: run on M0L1, listen to audio, confirm quality (TTS-05)
-
-**Success criteria:**
-- [ ] `python generate.py --audio M0L1` produces a .wav from existing script
-- [ ] Audio duration matches estimated word count (+-15%)
-- [ ] Voice sounds natural and clear on 30s spot check
-
----
-
-## Phase 5: Integrated Workflow & Polish
-
-**Goal:** Single unified CLI with full lesson list, status view, and smooth end-to-end flow.
-
-**Requirements covered:** TTS-05, WRK-01 through WRK-04
-
-**Plans:** 0/3 plans executed
-
-Plans:
-- [x] 05-01-PLAN.md — ElevenLabs TTS backend (replace Kokoro), config update, tests rewrite
-- [x] 05-02-PLAN.md — Startup status table + --list flag (WRK-01, WRK-03)
-- [x] 05-03-PLAN.md — --lesson unified flow + --dry-run + error handling + human verify (WRK-02, WRK-04)
-
-### Plans
-
-**Plan 5.1 — ElevenLabs TTS Backend (Wave 1)**
-- Replace Kokoro with ElevenLabs Jon voice (ID: Cz0K1kOv9tD8l0b5Qu53)
-- `config.py`: remove KOKORO_*, add ELEVENLABS_* constants
-- `src/audio_generator.py`: rewrite to call ElevenLabs REST API, save .mp3
-- `tests/test_audio_generator.py`: rewrite to mock requests.post
-
-**Plan 5.2 — Startup Status Table (Wave 1, parallel with 5.1)**
-- `generate.py`: add show_status_table() grouped by module with emoji per status
-- `--list` flag: print table and exit (WRK-01, WRK-03)
-
-**Plan 5.3 — Unified Lesson Flow (Wave 2)**
-- `generate.py --lesson M0L1`: full flow context → script → review → audio prompt
-- `generate.py --dry-run M0L1`: show assembled context + token estimate, no API calls
-- Actionable error messages throughout ("Fix: ...")
-- Claude API retry once on error with 10s delay
-- Human verification checkpoint
-
-**Success criteria:**
-- [ ] `python generate.py` shows formatted lesson status table
-- [ ] `python generate.py --lesson M0L1` completes end-to-end in < 2 minutes
-- [ ] Error messages are actionable (contain "Fix:")
-- [ ] Dry-run works without any API calls
-- [ ] Audio saved as .mp3 via ElevenLabs Jon voice
-
----
-
-## Phase Sequence
-
-```
-Phase 1 (Setup)
-    → Phase 2 (Data Pipeline)
-        → Phase 3 (Script Gen)
-            → Phase 4 (TTS Audio)
-                → Phase 5 (Workflow)
-```
-
-Sequential — each phase builds on the previous. No parallel phases for this project.
-
----
-
-## Definition of Done (v1.0)
-
-- [ ] All 22 v1 requirements checked off
-- [ ] At least 3 full lessons generated end-to-end (script + audio)
-- [ ] Lesson status tracker persists correctly
-- [ ] README accurate and complete
-- [ ] `python generate.py --list` shows all 30+ lessons with status
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|---------------|--------|-----------|
+| 1. Project Setup & Environment | v1.0 | 2/2 | ✅ Complete | 2026-03-26 |
+| 2. Data Pipeline | v1.0 | 1/1 | ✅ Complete | 2026-03-26 |
+| 3. Script Generator | v1.0 | 2/2 | ✅ Complete | 2026-03-27 |
+| 4. TTS Audio Generator | v1.0 | 3/3 | ✅ Complete | 2026-03-27 |
+| 5. Integrated Workflow & Polish | v1.0 | 3/3 | ✅ Complete | 2026-03-27 |
 
 ---
 *Roadmap created: 2026-03-26*
-*Last updated: 2026-03-27 — Phase 05 planned: 3 plans in 2 waves*
+*Last updated: 2026-03-27 — v1.0 milestone complete*

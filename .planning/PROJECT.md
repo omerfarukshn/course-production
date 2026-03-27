@@ -2,7 +2,7 @@
 
 ## What This Is
 
-An interactive Python-based production tool for the SahinLabs AI Income Club course. It combines SahinLabs lesson outlines with AI Video Bootcamp transcripts to generate high-quality English narration scripts (with production markers for screen/image/video cues), then converts approved scripts to TTS audio via Chatterbox local. Built for Ömer — solo creator producing 30+ video lessons.
+An interactive Python CLI for producing the SahinLabs AI Income Club course. It combines SahinLabs lesson outlines with AI Video Bootcamp transcripts to generate English narration scripts (with [SCREEN]/[IMAGE]/[VIDEO] production markers), then converts approved scripts to MP3 audio via ElevenLabs TTS. Built for Ömer — solo creator producing 33 video lessons across 6 modules (M0–M5).
 
 ## Core Value
 
@@ -12,41 +12,50 @@ Every lesson must have a production-ready English script with [SCREEN]/[IMAGE]/[
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Parse and index `bootcamp_transcripts.json` (keyword-scored search) — v1.0
+- ✓ Load SahinLabs course content from `sources/sahinlabs_course.txt` — v1.0
+- ✓ Interactive lesson selector — module browser, lesson status display — v1.0
+- ✓ Script generation via Claude API — English narration with [SCREEN RECORDING], [IMAGE], [VIDEO] markers — v1.0
+- ✓ Script review loop — (a)ccept/(e)dit/(r)egenerate/(s)kip — v1.0
+- ✓ ElevenLabs TTS audio generation — Jon voice, MP3 output — v1.0 *(adjusted from Chatterbox local)*
+- ✓ Organized output: `scripts/M{n}L{n}_{title}.md` + `audio/M{n}L{n}_{title}.mp3` — v1.0
+- ✓ Lesson status tracking — pending/scripted/audio_done, persists between sessions — v1.0
+- ✓ Prompt caching — course content + bootcamp index cached (~$0.54 for all 33 lessons) — v1.0
+- ✓ Single-command lesson production — `--lesson M0L1` full flow — v1.0
+- ✓ Dry-run mode — `--dry-run M0L1` context inspection, zero API cost — v1.0
+- ✓ Startup status table — grouped by module with `--list` flag — v1.0
 
 ### Active
 
-- [ ] Parse and index `bootcamp_transcripts.json` to extract relevant sections per lesson
-- [ ] Load SahinLabs course content from `sources/sahinlabs_course.txt`
-- [ ] Interactive lesson selector — pick a lesson, see outline + bootcamp context, generate script
-- [ ] Script generation via Claude API — English narration with [SCREEN RECORDING], [IMAGE: description], [VIDEO: description] production markers
-- [ ] Script review loop — show generated script, allow edit/approve before saving
-- [ ] TTS audio generation via Chatterbox local — high-quality male English voice
-- [ ] Organized output: `scripts/M{n}L{n}_{title}.md` + `audio/M{n}L{n}_{title}.mp3`
-- [ ] Lesson status tracking — mark lessons as pending/scripted/audio-done
+*(No active requirements — v1.0 complete. Define v1.1 with `/gsd:new-milestone`)*
 
 ### Out of Scope
 
-- Automatic video editing or assembly — Ömer will edit manually using the scripts + audio
-- Turkish language output — English only for this system
-- Uploading to Skool or any platform — local production tool only
-- Instagram/social media posting — separate Maggie project
-- Custom GPT via ChatGPT UI — using Claude API instead (no extra key needed)
+| Feature | Reason |
+|---------|--------|
+| Turkish scripts | English only for this course version |
+| Full batch automation | Ömer reviews each script — interactive is intentional |
+| Video editing / assembly | Ömer handles this; tool produces script + audio only |
+| Skool / platform upload | Local production tool; upload is manual |
+| ChatGPT / OpenAI API | Using Claude API — better quality, already available |
+| Multiple language TTS | English male voice only for this course |
+| Web UI | Terminal/CLI only; simpler, faster to build |
+| Chatterbox local TTS | Replaced by ElevenLabs — no GPU required, better quality |
 
 ## Context
 
-- **Data sources:** `C:\Users\sahin\bootcamp_transcripts.json` (AI Video Bootcamp transcripts, already exists) + `C:\Users\sahin\projects\course-production\sources\sahinlabs_course.txt` (Ömer will prepare)
-- **Course structure:** 6 modules (M0–M5), ~30 lessons total (see CLAUDE.md for full outline)
-- **Script format:** Professional English narration for screen recording + generative media. Production markers guide Ömer when to cut to screen capture, AI-generated image, or video clip. Ömer handles the editing.
-- **TTS:** Chatterbox local (runs on RTX 3050 4GB VRAM). Previously used — 4 voice samples generated. Need to select best high-quality male English voice.
+- **Shipped:** v1.0 on 2026-03-27 — 5 phases, 11 plans, 1,863 LOC Python, 49 tests
+- **Course structure:** 6 modules (M0–M5), 33 lessons total
+- **TTS:** ElevenLabs Jon voice (eleven_turbo_v2_5) via REST API — MP3 output
+- **LLM:** Claude API (Anthropic SDK) with TextBlockParam prompt caching
 - **Platform:** Windows 11, Python, `C:\Users\sahin\projects\course-production\`
-- **LLM:** Claude (Anthropic API or claude CLI) — best quality, already available in Claude Code environment
+- **Test suite:** 49 pytest tests, all mocked (no live API calls in tests)
+- **CLI modes:** `--list`, `--lesson M0L1`, `--dry-run M0L1`, `--audio M0L1`, interactive
 
 ## Constraints
 
-- **Budget:** $0 TTS — Chatterbox local only, no paid voice APIs
-- **Hardware:** RTX 3050 4GB VRAM — Chatterbox must fit in GPU memory
-- **Data:** Course content .txt must be provided by Ömer before script generation can begin
+- **Budget:** ElevenLabs API key available; Kokoro removed (no GPU dependency)
+- **Hardware:** Windows 11, RTX 3050 4GB (no longer needed for TTS)
 - **Language:** English only — narration scripts must be natural, fluent English
 - **Process:** Interactive one-lesson-at-a-time — not fully automated batch (Ömer reviews each script)
 
@@ -54,27 +63,15 @@ Every lesson must have a production-ready English script with [SCREEN]/[IMAGE]/[
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Claude API for script generation | Already in environment, no extra key, best quality | — Pending |
-| Chatterbox for TTS | Free, local, GPU-accelerated, previously tested | — Pending |
-| Interactive workflow (not batch) | Ömer wants to review each script before audio generation | — Pending |
-| Production markers in script | Guides video editing without additional documentation | — Pending |
-
-## Evolution
-
-This document evolves at phase transitions and milestone boundaries.
-
-**After each phase transition** (via `/gsd:transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd:complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+| Claude API for script generation | Already in environment, no extra key, best quality | ✓ Works well — prompt caching saves ~80% tokens |
+| ElevenLabs Jon voice (v1.0 switch) | No GPU required, cloud API, consistent quality | ✓ MP3 output, TTS-01 satisfied |
+| Interactive workflow (not batch) | Ömer wants to review each script before audio | ✓ Override guard prevents accidental regeneration |
+| Production markers in script | Guides video editing without additional documentation | ✓ All scripts use [SCREEN]/[IMAGE]/[VIDEO] |
+| excerpt_chars=1500 | Phase 3 context_builder needs longer bootcamp excerpts | ✓ Better script context quality |
+| Dry-run mode | Debug context without API cost | ✓ Essential for iteration |
+| Startup status table | Ömer always sees progress without extra command | ✓ Grouped by module with emoji |
+| parse_lesson_id() strict regex | Prevents silent misrouting to wrong lesson | ✓ Clear error on bad M0L1 format |
+| Audio prompt defaults to 'n' | Prevents accidental ElevenLabs credit spend | ✓ User explicitly opts in to audio |
 
 ---
-*Last updated: 2026-03-26 after initialization*
+*Last updated: 2026-03-27 after v1.0 milestone*

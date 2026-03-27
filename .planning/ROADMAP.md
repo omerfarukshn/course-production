@@ -149,12 +149,12 @@ Plans:
 
 **Requirements covered:** TTS-05, WRK-01 through WRK-04
 
-**Plans:** 3 plans
+**Plans:** 0/3 plans executed
 
 Plans:
-- [ ] 05-01-PLAN.md — ElevenLabs TTS backend (replace Kokoro), config update, tests rewrite
-- [ ] 05-02-PLAN.md — Startup status table + --list flag (WRK-01, WRK-03)
-- [ ] 05-03-PLAN.md — --lesson unified flow + --dry-run + error handling + human verify (WRK-02, WRK-04)
+- [x] 05-01-PLAN.md — ElevenLabs TTS backend (replace Kokoro), config update, tests rewrite
+- [x] 05-02-PLAN.md — Startup status table + --list flag (WRK-01, WRK-03)
+- [x] 05-03-PLAN.md — --lesson unified flow + --dry-run + error handling + human verify (WRK-02, WRK-04)
 
 ### Plans
 

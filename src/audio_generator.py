@@ -1,54 +1,31 @@
 """
-Audio generator — convert narration text to WAV via Kokoro KPipeline.
-
-Lazy-loads the 82M model on first call. Chunks long text at sentence boundaries.
-Writes WAV at 24000 Hz using soundfile.
+Audio generator — convert narration text to MP3 via ElevenLabs REST API.
+Jon voice (Cz0K1kOv9tD8l0b5Qu53), eleven_turbo_v2_5 model.
 """
 import re
-import warnings
-import numpy as np
-import soundfile as sf
 from pathlib import Path
-from kokoro import KPipeline
-from config import AUDIO_DIR, KOKORO_VOICE_ID, KOKORO_LANG_CODE, KOKORO_SAMPLE_RATE
-
-_pipeline: KPipeline | None = None
+import requests
+from config import AUDIO_DIR, ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, ELEVENLABS_MODEL_ID, ELEVENLABS_API_URL
 
 
-def _get_pipeline() -> KPipeline:
-    """Lazy singleton — loads Kokoro model once, reuses across calls."""
-    global _pipeline
-    if _pipeline is None:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            _pipeline = KPipeline(lang_code=KOKORO_LANG_CODE, repo_id='hexgrad/Kokoro-82M')
-    return _pipeline
-
-
-def chunk_text(text: str, max_chars: int = 2000) -> list[str]:
-    """Split text at sentence boundaries if exceeding max_chars.
-
-    Uses regex lookbehind to split after sentence-ending punctuation (.!?).
-    Each chunk contains complete sentences and is <= max_chars.
-    """
-    if len(text) <= max_chars:
-        return [text]
-    sentences = re.split(r'(?<=[.!?])\s+', text)
-    chunks, current = [], ''
-    for sent in sentences:
-        if len(current) + len(sent) + 1 <= max_chars:
-            current = (current + ' ' + sent).strip()
-        else:
-            if current:
-                chunks.append(current)
-            current = sent
-    if current:
-        chunks.append(current)
-    return chunks
+def text_cleaner(text: str) -> str:
+    """Normalize text before TTS: expand abbreviations, strip extra whitespace."""
+    # Expand common abbreviations
+    text = re.sub(r'\be\.g\.\s*', 'for example ', text)
+    text = re.sub(r'\bvs\.\s*', 'versus ', text)
+    text = re.sub(r'\bw/\s*', 'with ', text)
+    text = re.sub(r'\betc\.\s*', 'et cetera ', text)
+    # Collapse whitespace
+    text = re.sub(r'[ \t]+', ' ', text)
+    text = re.sub(r'\n+', ' ', text)
+    # Remove markdown artifacts
+    text = re.sub(r'\*+', '', text)
+    text = re.sub(r'#+\s*', '', text)
+    return text.strip()
 
 
 def generate_audio(lesson_id: str, narration_text: str, slug: str) -> dict:
-    """Generate WAV audio from narration text using Kokoro TTS.
+    """Generate MP3 audio from narration text using ElevenLabs Jon voice.
 
     Args:
         lesson_id: e.g. "M0L1"
@@ -56,19 +33,44 @@ def generate_audio(lesson_id: str, narration_text: str, slug: str) -> dict:
         slug: filename slug e.g. "welcome_what_makes_this_different"
 
     Returns:
-        {"path": Path to .wav, "duration": float seconds}
+        {"path": Path to .mp3, "duration": float seconds}
+
+    Raises:
+        RuntimeError: if ElevenLabs API returns non-200
     """
-    pipeline = _get_pipeline()
-    output_path = AUDIO_DIR / f"{lesson_id}_{slug}.wav"
+    cleaned = text_cleaner(narration_text)
+    output_path = AUDIO_DIR / f"{lesson_id}_{slug}.mp3"
 
-    audio_chunks = []
-    for chunk in chunk_text(narration_text):
-        for result in pipeline(chunk, voice=KOKORO_VOICE_ID, speed=1.0):
-            if result.audio is not None:
-                audio_chunks.append(result.audio.numpy())
+    response = requests.post(
+        ELEVENLABS_API_URL,
+        headers={
+            "xi-api-key": ELEVENLABS_API_KEY,
+            "Content-Type": "application/json",
+        },
+        json={
+            "text": cleaned,
+            "model_id": ELEVENLABS_MODEL_ID,
+            "voice_settings": {
+                "stability": 0.40,
+                "similarity_boost": 0.88,
+                "style": 0.15,
+                "use_speaker_boost": True,
+            },
+            "output_format": "mp3_44100_128",
+        },
+        timeout=120,
+    )
 
-    audio = np.concatenate(audio_chunks)
-    sf.write(str(output_path), audio, KOKORO_SAMPLE_RATE)
+    if response.status_code != 200:
+        raise RuntimeError(
+            f"ElevenLabs API error ({response.status_code}): {response.text[:200]}. "
+            f"Fix: check ELEVENLABS_API_KEY in .env"
+        )
 
-    duration = len(audio) / KOKORO_SAMPLE_RATE
+    output_path.write_bytes(response.content)
+
+    # Estimate duration: ~150 wpm -> words / 150 * 60
+    word_count = len(cleaned.split())
+    duration = (word_count / 150) * 60
+
     return {"path": output_path, "duration": duration}
